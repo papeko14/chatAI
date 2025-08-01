@@ -3,7 +3,7 @@ import requests
 import json
 
 # --- Configuration ---
-N8N_WEBHOOK_URL = "http://localhost:5678/webhook/d8e551ba-6202-4544-be0a-74294ecff821" # Replace with your actual n8n webhook URL
+N8N_WEBHOOK_URL = "https://rationally-tough-ant.ngrok-free.app/webhook/d8e551ba-6202-4544-be0a-74294ecff821" # Replace with your actual n8n webhook URL
 
 # --- Streamlit UI ---
 st.set_page_config(page_title="n8n Chatbot", layout="centered")
