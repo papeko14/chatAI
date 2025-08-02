@@ -178,29 +178,23 @@ elif page_selection == "หน้ากราฟ":
         st.markdown("---")
         st.subheader("Chart Options")
 
-        # Allow user to select a column to plot
+        # Get all column names and numeric column names
+        all_cols = df.columns.tolist()
         numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
-        
-        # Assume 'name' column exists for the x-axis
-        if 'Name' in df.columns:
-            name_col = 'Name'
-        else:
-            name_col = None
-            st.warning("Column 'name' not found. Cannot plot grouped bar chart.")
 
-        if numeric_cols and name_col:
-            selected_column = st.selectbox(
-                "Select a numeric column to visualize:",
-                numeric_cols
-            )
-
-            # --- Data Visualization (Graph) ---
-            st.subheader(f"Bar Chart: '{selected_column}' by '{name_col}'")
+        if numeric_cols:
+            # Dropdown for selecting X-axis
+            x_axis = st.selectbox("Select X-axis:", all_cols)
             
-            # Group data by name_col and plot the sum of the selected numeric column
-            chart_data = df.groupby(name_col)[selected_column].sum()
+            # Dropdown for selecting Y-axis
+            y_axis = st.selectbox("Select Y-axis:", numeric_cols)
+            
+            # --- Data Visualization (Graph) ---
+            st.subheader(f"Bar Chart: '{y_axis}' by '{x_axis}'")
+            
+            # Group data by the selected x-axis and plot the sum of the y-axis
+            chart_data = df.groupby(x_axis)[y_axis].sum()
             st.bar_chart(chart_data)
-        elif not name_col:
-            st.warning("Column 'name' not found. Please ensure your data has a 'name' column to use this chart.")
-        elif not numeric_cols:
+        else:
             st.warning("No numeric columns found in the data to plot.")
+
