@@ -49,7 +49,6 @@ with st.sidebar:
         key="selected_machine" # ใช้ key เพื่อให้ Streamlit จัดการ session state
     )
     st.markdown("---")
-    st.info("Developed with Streamlit and n8n")
 
 st.title(f"🤖 Chat with {selected_machine}")
 st.write("Type your message and see n8n's response!")
@@ -106,4 +105,5 @@ if prompt := st.chat_input("Say something..."):
     # Save the updated chat history to file and rerun
     save_chat_history(selected_machine, st.session_state.messages)
     st.rerun()
+
 
