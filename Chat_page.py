@@ -38,13 +38,19 @@ with st.sidebar:
     st.title("Main Menu")
     
     # Dropdown menu สำหรับเลือกเครื่องจักร
+    zone = ('Exsample','iso10816-3')
     machine_options = ('FAN 2', 'FAN 1', 'PUMP 1', 'PUMP 2', 'PUMP 3',
-                       'BENCH TMPLT VRSPD', 'BENCH DA3', 'EGL-ISO10816-3',
-                       'FLC-ISO10816-3', 'MV-x ISO10816-3', '1A-1 - Pump', 'Gear EX',
-                       'Pump Gateway')
+                       'BENCH TMPLT VRSPD', 'BENCH DA3'
+                       , 'EGL-ISO10816-3'
+                       ,'FLC-ISO10816-3'
+                       , 'MV-x ISO10816-3'
+                       , '1A-1 - Pump' 
+                       , 'Gear EX'
+                       ,'Pump Gateway')
     
     selected_machine = st.selectbox(
         "Select a machine:",
+        zone,
         machine_options,
         key="selected_machine" # ใช้ key เพื่อให้ Streamlit จัดการ session state
     )
@@ -105,5 +111,4 @@ if prompt := st.chat_input("Say something..."):
     # Save the updated chat history to file and rerun
     save_chat_history(selected_machine, st.session_state.messages)
     st.rerun()
-
 
