@@ -47,15 +47,17 @@ with st.sidebar:
                        , '1A-1 - Pump' 
                        , 'Gear EX'
                        ,'Pump Gateway')
-    
+    selected_zone = st.selectbox(
+        "Select zone of machine:",
+        zone,
+        key="zone" # ใช้ key เพื่อให้ Streamlit จัดการ session state
+    )
     selected_machine = st.selectbox(
         "Select a machine:",
-        zone,
         machine_options,
         key="selected_machine" # ใช้ key เพื่อให้ Streamlit จัดการ session state
     )
     st.markdown("---")
-
 st.title(f"🤖 Chat with {selected_machine}")
 st.write("Type your message and see n8n's response!")
 
