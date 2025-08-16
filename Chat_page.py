@@ -9,11 +9,11 @@ import csv
 # URL ของ n8n webhook
 N8N_WEBHOOK_URL = "https://rationally-tough-ant.ngrok-free.app/webhook/d8e551ba-6202-4544-be0a-74294ecff821"
 
-def load_chat_history(machine_name):
+def load_chat_history(zone_name, machine_name):
     """
-    ฟังก์ชันสำหรับโหลดประวัติการแชทจากไฟล์ JSON ตามชื่อเครื่องจักร
+    ฟังก์ชันสำหรับโหลดประวัติการแชทจากไฟล์ JSON ตามชื่อโซนและเครื่องจักร
     """
-    chat_history_file = f"{machine_name}.json"
+    chat_history_file = f"{zone_name}_{machine_name}.json"
     if os.path.exists(chat_history_file):
         try:
             with open(chat_history_file, "r", encoding="utf-8") as f:
@@ -22,11 +22,11 @@ def load_chat_history(machine_name):
             return []
     return []
 
-def save_chat_history(machine_name, messages):
+def save_chat_history(zone_name, machine_name, messages):
     """
-    ฟังก์ชันสำหรับบันทึกประวัติการแชทลงในไฟล์ JSON ตามชื่อเครื่องจักร
+    ฟังก์ชันสำหรับบันทึกประวัติการแชทลงในไฟล์ JSON ตามชื่อโซนและเครื่องจักร
     """
-    chat_history_file = f"{machine_name}.json"
+    chat_history_file = f"{zone_name}_{machine_name}.json"
     with open(chat_history_file, "w", encoding="utf-8") as f:
         json.dump(messages, f, indent=4, ensure_ascii=False)
 
@@ -42,7 +42,7 @@ with st.sidebar:
     selected_zone = st.selectbox(
         "Select zone of machine:",
         zone_options,
-        key="zone" # ใช้ key เพื่อให้ Streamlit จัดการ session state
+        key="zone"
     )
 
     # Dropdown menu สำหรับเลือกเครื่องจักร
@@ -53,13 +53,12 @@ with st.sidebar:
     selected_machine = st.selectbox(
         "Select a machine:",
         machine_options,
-        key="selected_machine" # ใช้ key เพื่อให้ Streamlit จัดการ session state
+        key="selected_machine"
     )
     st.markdown("---")
     st.info("Developed with Streamlit and n8n")
 
-st.title(f"🤖 Chat with {selected_zone}")
-st.title(f"🤖 Chat with {selected_machine}")
+st.title(f"🤖 Chat with {selected_zone} - {selected_machine}")
 st.write("Type your message and see n8n's response!")
 
 # --- Main App Logic ---
@@ -67,7 +66,7 @@ st.write("Type your message and see n8n's response!")
 # Check for a change in either zone or machine selection
 current_state_key = (selected_zone, selected_machine)
 if st.session_state.get("current_state_key") != current_state_key:
-    st.session_state.messages = load_chat_history(selected_machine)
+    st.session_state.messages = load_chat_history(selected_zone, selected_machine)
     st.session_state["current_state_key"] = current_state_key
 
 # Display past messages
@@ -84,7 +83,7 @@ if prompt := st.chat_input("Say something..."):
 
     try:
         # Send message to n8n webhook
-        payload = {"message": prompt, "zone": selected_zone, "machine": selected_machine} # เพิ่ม zone name ใน payload
+        payload = {"message": prompt, "zone": selected_zone, "machine": selected_machine}
         headers = {"Content-Type": "application/json"}
         response = requests.post(N8N_WEBHOOK_URL, data=json.dumps(payload), headers=headers)
         response.raise_for_status()
@@ -112,5 +111,5 @@ if prompt := st.chat_input("Say something..."):
             st.markdown(error_message)
 
     # Save the updated chat history to file and rerun
-    save_chat_history(selected_machine, st.session_state.messages)
+    save_chat_history(selected_zone, selected_machine, st.session_state.messages)
     st.rerun()
