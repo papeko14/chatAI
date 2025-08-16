@@ -9,12 +9,13 @@ st.set_page_config(page_title="n8n Chatbot App", layout="centered")
 # สร้างเมนูทางด้านซ้าย (Sidebar)
 Data = st.Page(page='Table_Data.py',title='Data', icon='📅')
 chat_bot = st.Page(page='Chat_page.py',title='Chat_bot', icon='🤖')
-chat_bot_zone = st.Page(page='Chat_page_zone.py',title='Chat_bot_zone')
+chat_bot_zone = st.Page(page='Chat_page_zone.py',title='Chat_bot_zone',icon='🤖')
 graph = st.Page(page=r'Graph_data.py',title='Chat_bot', icon='📊')
 pg = st.navigation(
-        pages=[chat_bot,Data,graph]
+        pages=[chat_bot,chat_zone,Data,graph]
     )
 pg.run()
+
 
 
 
