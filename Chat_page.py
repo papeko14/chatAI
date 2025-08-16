@@ -37,37 +37,38 @@ st.set_page_config(page_title="n8n Chatbot", layout="centered")
 with st.sidebar:
     st.title("Main Menu")
     
-    # Dropdown menu สำหรับเลือกเครื่องจักร
-    zone = ('Exsample','iso10816-3')
-    machine_options = ('FAN 2', 'FAN 1', 'PUMP 1', 'PUMP 2', 'PUMP 3',
-                       'BENCH TMPLT VRSPD', 'BENCH DA3'
-                       , 'EGL-ISO10816-3'
-                       ,'FLC-ISO10816-3'
-                       , 'MV-x ISO10816-3'
-                       , '1A-1 - Pump' 
-                       , 'Gear EX'
-                       ,'Pump Gateway')
+    # Dropdown menu สำหรับเลือก zone
+    zone_options = ('Exsample', 'iso10816-3')
     selected_zone = st.selectbox(
         "Select zone of machine:",
-        zone,
+        zone_options,
         key="zone" # ใช้ key เพื่อให้ Streamlit จัดการ session state
     )
+
+    # Dropdown menu สำหรับเลือกเครื่องจักร
+    machine_options = ('FAN 2', 'FAN 1', 'PUMP 1', 'PUMP 2', 'PUMP 3',
+                       'BENCH TMPLT VRSPD', 'BENCH DA3',
+                       'EGL-ISO10816-3', 'FLC-ISO10816-3', 'MV-x ISO10816-3',
+                       '1A-1 - Pump', 'Gear EX', 'Pump Gateway')
     selected_machine = st.selectbox(
         "Select a machine:",
         machine_options,
         key="selected_machine" # ใช้ key เพื่อให้ Streamlit จัดการ session state
     )
     st.markdown("---")
+    st.info("Developed with Streamlit and n8n")
+
+st.title(f"🤖 Chat with {selected_zone}")
 st.title(f"🤖 Chat with {selected_machine}")
 st.write("Type your message and see n8n's response!")
 
 # --- Main App Logic ---
 
-# ตรวจสอบการเปลี่ยนแปลงของเครื่องจักรที่เลือก
-# ถ้าเลือกเครื่องจักรใหม่ ให้โหลดประวัติการแชทใหม่
-if st.session_state.get("current_machine") != selected_machine:
+# Check for a change in either zone or machine selection
+current_state_key = (selected_zone, selected_machine)
+if st.session_state.get("current_state_key") != current_state_key:
     st.session_state.messages = load_chat_history(selected_machine)
-    st.session_state["current_machine"] = selected_machine
+    st.session_state["current_state_key"] = current_state_key
 
 # Display past messages
 for message in st.session_state.messages:
@@ -83,7 +84,7 @@ if prompt := st.chat_input("Say something..."):
 
     try:
         # Send message to n8n webhook
-        payload = {"message": prompt, "machine": selected_machine} # เพิ่ม machine name ใน payload
+        payload = {"message": prompt, "zone": selected_zone, "machine": selected_machine} # เพิ่ม zone name ใน payload
         headers = {"Content-Type": "application/json"}
         response = requests.post(N8N_WEBHOOK_URL, data=json.dumps(payload), headers=headers)
         response.raise_for_status()
@@ -113,6 +114,3 @@ if prompt := st.chat_input("Say something..."):
     # Save the updated chat history to file and rerun
     save_chat_history(selected_machine, st.session_state.messages)
     st.rerun()
-
-
-
