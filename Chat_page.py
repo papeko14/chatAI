@@ -7,7 +7,7 @@ import csv
 
 # --- Configuration ---
 # URL ของ n8n webhook
-N8N_WEBHOOK_URL = "https://rationally-tough-ant.ngrok-free.app/webhook-test/d8e551ba-6202-4544-be0a-74294ecff821"
+N8N_WEBHOOK_URL = "https://rationally-tough-ant.ngrok-free.app/webhook/d8e551ba-6202-4544-be0a-74294ecff821"
 
 def load_chat_history(machine_name):
     """
@@ -113,5 +113,6 @@ if prompt := st.chat_input("Say something..."):
     # Save the updated chat history to file and rerun
     save_chat_history(selected_machine, st.session_state.messages)
     st.rerun()
+
 
 
