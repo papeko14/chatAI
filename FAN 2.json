@@ -1,0 +1,10 @@
+[
+    {
+        "role": "user",
+        "content": "Fan 2 สวัสดี"
+    },
+    {
+        "role": "assistant",
+        "content": "Error connecting to n8n: 404 Client Error: Not Found for url: https://rationally-tough-ant.ngrok-free.app/webhook/d8e551ba-6202-4544-be0a-74294ecff821"
+    }
+]
