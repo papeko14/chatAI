@@ -117,7 +117,8 @@ with col1:
     uploaded_file = st.file_uploader(
         "Upload an image (optional)", 
         type=['png', 'jpg', 'jpeg', 'gif', 'bmp'],
-        help="Upload an image to analyze along with your message"
+        help="Upload an image to analyze along with your message",
+        key="uploaded_file"
     )
 
 with col2:
@@ -225,10 +226,11 @@ if prompt := st.chat_input("Say something..."):
     # Save the updated chat history to file and rerun
     save_chat_history(selected_machine, st.session_state.messages)
     
-    # Clear the uploaded file after sending
+    # === ส่วนที่ถูกปรับปรุง: เคลียร์รูปภาพที่อัปโหลด ===
+    # ใช้ st.session_state.uploaded_file = None เพื่อเคลียร์ไฟล์
     if has_image:
-        st.session_state.pop('uploaded_file', None)
-    
+        st.session_state.uploaded_file = None
+
     st.rerun()
 
 # --- Additional Features ---
@@ -243,5 +245,3 @@ if st.button("🗑️ Clear Chat History", type="secondary"):
 # Show file info if image is uploaded
 if uploaded_file is not None:
     st.info(f"📎 Ready to send: {uploaded_file.name} ({uploaded_file.size} bytes)")
-
-
