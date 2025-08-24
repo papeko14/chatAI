@@ -113,6 +113,7 @@ for message in st.session_state.messages:
 st.markdown("---")
 col1, col2 = st.columns([2, 1])
 
+# === ส่วนที่ถูกปรับปรุง: ใช้ st.session_state.uploaded_file เพื่อจัดการ ===
 with col1:
     uploaded_file = st.file_uploader(
         "Upload an image (optional)", 
@@ -227,7 +228,7 @@ if prompt := st.chat_input("Say something..."):
     save_chat_history(selected_machine, st.session_state.messages)
     
     # === ส่วนที่ถูกปรับปรุง: เคลียร์รูปภาพที่อัปโหลด ===
-    # ใช้ st.session_state.uploaded_file = None เพื่อเคลียร์ไฟล์
+    # ใช้ st.session_state.pop() เพื่อเคลียร์ค่าใน session state
     if has_image:
         st.session_state.pop('uploaded_file', None)
 
