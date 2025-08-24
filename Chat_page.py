@@ -113,13 +113,18 @@ for message in st.session_state.messages:
 st.markdown("---")
 col1, col2 = st.columns([2, 1])
 
-# === ส่วนที่ถูกปรับปรุง: ใช้ st.session_state.uploaded_file เพื่อจัดการ ===
+# เพิ่ม flag เพื่อเคลียร์ file uploader หลังจากส่งข้อความ
+if 'clear_file_uploader' not in st.session_state:
+    st.session_state.clear_file_uploader = False
+
 with col1:
+    # ใช้ key ที่เปลี่ยนแปลงได้เพื่อ reset file uploader
+    uploader_key = f"file_uploader_{st.session_state.get('uploader_counter', 0)}"
     uploaded_file = st.file_uploader(
         "Upload an image (optional)", 
         type=['png', 'jpg', 'jpeg', 'gif', 'bmp'],
         help="Upload an image to analyze along with your message",
-        key="uploaded_file"
+        key=uploader_key
     )
 
 with col2:
@@ -192,8 +197,8 @@ if prompt := st.chat_input("Say something..."):
         # Send request to n8n webhook
         headers = {"Content-Type": "application/json"}
         
-        with st.spinner("Sending to AI"):
-            response = requests.post(N8N_WEBHOOK_URL, data=json.dumps(payload), headers=headers, timeout=120)
+        with st.spinner("Sending to n8n..."):
+            response = requests.post(N8N_WEBHOOK_URL, data=json.dumps(payload), headers=headers, timeout=30)
             response.raise_for_status()
 
         # Get n8n's response
@@ -224,14 +229,14 @@ if prompt := st.chat_input("Say something..."):
         with st.chat_message("assistant"):
             st.markdown(error_message)
 
-    # Save the updated chat history to file and rerun
+    # Save the updated chat history to file
     save_chat_history(selected_machine, st.session_state.messages)
     
-    # === ส่วนที่ถูกปรับปรุง: เคลียร์รูปภาพที่อัปโหลด ===
-    # ใช้ st.session_state.pop() เพื่อเคลียร์ค่าใน session state
-    if has_image:
-        st.session_state.pop('uploaded_file', None)
-
+    # เคลียร์ file uploader โดยการเพิ่ม counter เพื่อเปลี่ยน key
+    if 'uploader_counter' not in st.session_state:
+        st.session_state.uploader_counter = 0
+    st.session_state.uploader_counter += 1
+    
     st.rerun()
 
 # --- Additional Features ---
