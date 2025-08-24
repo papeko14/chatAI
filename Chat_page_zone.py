@@ -111,6 +111,7 @@ st.markdown("---")
 col1, col2 = st.columns([2, 1])
 
 with col1:
+    uploader_key = f"file_uploader_{st.session_state.get('uploader_counter', 0)}"
     uploaded_file = st.file_uploader(
         "Upload an image (optional)", 
         type=['png', 'jpg', 'jpeg', 'gif', 'bmp'],
@@ -223,10 +224,10 @@ if prompt := st.chat_input("Say something..."):
     save_chat_history(selected_machine, st.session_state.messages)
     
     # Clear the uploaded file after sending
-    if has_image:
-        st.session_state.pop('uploaded_file', None)
-    
-    st.rerun()
+    # เคลียร์ file uploader โดยการเพิ่ม counter เพื่อเปลี่ยน key
+    if 'uploader_counter' not in st.session_state:
+        st.session_state.uploader_counter = 0
+    st.session_state.uploader_counter += 1
 
 # --- Additional Features ---
 st.markdown("---")
@@ -240,5 +241,6 @@ if st.button("🗑️ Clear Chat History", type="secondary"):
 # Show file info if image is uploaded
 if uploaded_file is not None:
     st.info(f"📎 Ready to send: {uploaded_file.name} ({uploaded_file.size} bytes)")
+
 
 
