@@ -229,7 +229,7 @@ if prompt := st.chat_input("Say something..."):
     # === ส่วนที่ถูกปรับปรุง: เคลียร์รูปภาพที่อัปโหลด ===
     # ใช้ st.session_state.uploaded_file = None เพื่อเคลียร์ไฟล์
     if has_image:
-        st.session_state.uploaded_file = None
+        st.session_state.pop('uploaded_file', None)
 
     st.rerun()
 
