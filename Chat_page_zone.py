@@ -187,7 +187,7 @@ if prompt := st.chat_input("Say something..."):
         # Send request to n8n webhook
         headers = {"Content-Type": "application/json"}
         
-        with st.spinner("Sending to n8n..."):
+        with st.spinner("Sending to AI"):
             response = requests.post(N8N_WEBHOOK_URL, data=json.dumps(payload), headers=headers, timeout=30)
             response.raise_for_status()
 
@@ -240,3 +240,4 @@ if st.button("🗑️ Clear Chat History", type="secondary"):
 # Show file info if image is uploaded
 if uploaded_file is not None:
     st.info(f"📎 Ready to send: {uploaded_file.name} ({uploaded_file.size} bytes)")
+
