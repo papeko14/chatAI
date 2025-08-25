@@ -12,10 +12,9 @@ chat_bot = st.Page(page='Chat_page.py',title='Chat_bot', icon='🤖')
 chat_zone = st.Page(page='Chat_page_zone.py',title='Chat_bot_zone',icon='🤖')
 graph = st.Page(page=r'Graph_data.py',title='Data Visualization', icon='📊')
 test_db = st.Page(page=r'test_db.py',title='Data base', icon='📊')
-pg = st.navigation(
-        pages=[test_db,chat_zone,Data,graph]
-    )
+
 pg.run()
+
 
 
 
